@@ -33,11 +33,28 @@ const char* fragmentShaderSource = R"(
     in vec3 vertexColor;
     uniform float atime;
 
+    float PI = 3.141592;
+
     void main()
     {
-        //FragColor = vec4(vertexColor.r ,vertexColor.g,vertexColor.b, 1.0);
 
-        FragColor = vec4(gl_FragCoord.x / 800 ,gl_FragCoord.y / 600 ,0.0,1.0);
+        //cos(x) + sin(y)
+        // Domino (0,0) x (800,600) a (-pi,-pi) x (pi,pi)    
+        float x = gl_FragCoord.x / 800 ;
+        float y = gl_FragCoord.y / 800 ;
+
+        //(0,1) -> (-pi,pi)
+        float x1 = (x - 0.5) * 2.0 * PI;
+        float y1 = (y - 0.5) * 2.0 * PI;
+        
+
+        float z = cos(x1) + sin(y1); 
+
+
+        FragColor = vec4(   (cos(x1) + 1.0) * 0.5, 
+                            (sin(y1) + 1.0) * 0.5, 
+                            (z + 1.0) * 0.5 ,
+                            1.0);
     }
 )";
 
@@ -113,7 +130,7 @@ int main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Create a GLFWwindow object
-    GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL Triangle", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(800, 800, "OpenGL Triangle", NULL, NULL);
     if (!window)
     {
         std::cerr << "Failed to create GLFW window" << std::endl;

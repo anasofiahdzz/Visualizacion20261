@@ -37,7 +37,7 @@ const char* fragmentShaderSource = R"(
     {
         //FragColor = vec4(vertexColor.r ,vertexColor.g,vertexColor.b, 1.0);
 
-        FragColor = vec4(gl_FragCoord.x  ,gl_FragCoord.y ,0.0,1.0);
+        FragColor = vec4(gl_FragCoord.x / 800 ,gl_FragCoord.y / 600 ,0.0,1.0);
     }
 )";
 
@@ -87,13 +87,13 @@ std::vector<float> crearCuadrado(){
     
     std::vector<float> vertices;
     // v0
-    vertices.push_back(0.75f); vertices.push_back(0.75f); vertices.push_back(0.0f);
+    vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(0.0f);
     // v1
-    vertices.push_back(0.75f); vertices.push_back(-0.75f); vertices.push_back(0.0f);
+    vertices.push_back(1.0f); vertices.push_back(-1.0f); vertices.push_back(0.0f);
     // v2
-    vertices.push_back(-0.75f); vertices.push_back(0.75f); vertices.push_back(0.0f);
+    vertices.push_back(-1.0f); vertices.push_back(1.0f); vertices.push_back(0.0f);
     // v3
-    vertices.push_back(-0.75f); vertices.push_back(-0.75f); vertices.push_back(0.0f);
+    vertices.push_back(-1.0f); vertices.push_back(-1.0f); vertices.push_back(0.0f);
 
     return vertices;
 }

@@ -10,7 +10,6 @@
 const char* vertexShaderSource = R"(
     #version 410 core
     layout (location = 0) in vec3 aPos;
-    // layout (location = 1) in vec3 aColor;
     uniform float atime;
     out vec3 vertexColor;
 
@@ -37,7 +36,27 @@ const char* fragmentShaderSource = R"(
     {
         //FragColor = vec4(vertexColor.r ,vertexColor.g,vertexColor.b, 1.0);
 
-        FragColor = vec4(gl_FragCoord.x  ,gl_FragCoord.y ,0.0,1.0);
+        // gl_FragCoord (0,0) -> (w,h)
+        // gl_FragCoord (0,0) -> (800,600) <-> (-1,-1) -> (1,1)
+
+
+        // Tarea: función a pintar cos(x) + sin(y) = b
+        // 1. Es definir mi dominio (0,0) -> (800,600)
+        // 2. ¿Cuál es el dominio de mi función a pintar? en el circulo unitario
+        // 3. ¿Cuál es el rango de mi función a pintar? 
+        // 4. ¿Cómo o que hago para enviar el dominio y rango de mi función a (r,g,b)?
+        // Es uno de los principios que verermos en visualización (Dominios y rangos)
+
+
+        FragColor = vec4(gl_FragCoord.x / 800, // r
+                         gl_FragCoord.y / 600, // g
+                         0.0, // b 
+                         1.0); // alfa
+
+       // FragColor = vec4( cos(x) ,
+       //                   sin(y) ,
+       //                   cos(x) + sin(y),
+       //                   1.0 );
     }
 )";
 
@@ -53,9 +72,9 @@ void crearCirculo(int tam, float radius, float* vertices)
     for(int i = 1; i < tam + 1; i++)
     {
 
-    vertices[(i*tam)+0] = radius *cosf(((2.0f * PI)/tam) * i); //x
-    vertices[(i*tam)+1] = radius *sinf(((2.0f * PI)/tam) * i); //y
-    vertices[(i*tam)+2] = 0.0f; //z
+    vertices[(i*3)+0] = radius *cosf(((2.0f * PI)/tam) * i); //x
+    vertices[(i*3)+1] = radius *sinf(((2.0f * PI)/tam) * i); //y
+    vertices[(i*3)+2] = 0.0f; //z
 
 
     }
@@ -69,7 +88,7 @@ std::vector<float> crearCirculoVector(int tam, float radius)
     vertices.push_back(0.0f);
     vertices.push_back(0.0f);
 
-    for(int i = 1; i < tam + 1; i++)
+    for(int i = 0; i < tam + 1; i++)
     {
 
     vertices.push_back(radius *cosf(((2.0f * PI)/tam) * i)); //x
@@ -87,13 +106,13 @@ std::vector<float> crearCuadrado(){
     
     std::vector<float> vertices;
     // v0
-    vertices.push_back(0.75f); vertices.push_back(0.75f); vertices.push_back(0.0f);
+    vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(0.0f);
     // v1
-    vertices.push_back(0.75f); vertices.push_back(-0.75f); vertices.push_back(0.0f);
+    vertices.push_back(1.0f); vertices.push_back(-1.0f); vertices.push_back(0.0f);
     // v2
-    vertices.push_back(-0.75f); vertices.push_back(0.75f); vertices.push_back(0.0f);
+    vertices.push_back(-1.0f); vertices.push_back(1.0f); vertices.push_back(0.0f);
     // v3
-    vertices.push_back(-0.75f); vertices.push_back(-0.75f); vertices.push_back(0.0f);
+    vertices.push_back(-1.0f); vertices.push_back(-1.0f); vertices.push_back(0.0f);
 
     return vertices;
 }
@@ -176,21 +195,7 @@ int main()
     glDeleteShader(fragmentShader);
 
     // Set up vertex data and buffers and configure vertex attributes
-    /*float vertices[] = {
-        -1.5f, -1.5f, 0.0f,
-         1.5f, -1.5f, 0.0f,
-         0.0f,  1.5f, 0.0f
-    };*/
 
-    /*float vertices[] = {
-        -1.0f,  1.0f, 0.0f,
-        -1.0f, 0.0f, 0.0f,
-         0.0f,  1.0f, 0.0f,
-         
-         1.0f, -1.0f, 0.0f,
-         1.0f, 0.0f, 0.0f,
-         0.0f, -1.0f, 0.0f
-    };*/
 
     float colors[] = {
          1.0f,  0.0f, 0.0f,
@@ -221,24 +226,6 @@ int main()
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-
-    // Unbind the VAO
-    glBindVertexArray(0);
-
-
-    GLuint VBOcolor, VAOcolor;
-    
-    glGenVertexArrays(1, &VAOcolor);
-    glGenBuffers(1, &VBOcolor);
-
-    // Bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-    glBindVertexArray(VAOcolor);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBOcolor);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(1);
 
     // Unbind the VAO
     glBindVertexArray(0);

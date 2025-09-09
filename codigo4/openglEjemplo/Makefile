@@ -1,7 +1,7 @@
 # Variables
 CC = g++
 SRC = main.cpp
-TARGET = triangle
+TARGET = circulo
 LIBS = -lglfw -lGLEW -lGL
 CFLAGS = -Wall -Wextra -std=c++11
 

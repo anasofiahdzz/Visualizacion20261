@@ -16,7 +16,7 @@ const char* vertexShaderSource = R"(
 
     void main()
     {
-//        gl_Position = vec4(aPos.x + sin(atime),aPos.y,aPos.z, 1.0);
+//      gl_Position = vec4(aPos.x + sin(atime),aPos.y,aPos.z, 1.0);
         gl_Position = vec4(
                         aPos.x , //* cos(atime) + aPos.y * sin(atime), 
                         aPos.y , //* cos(atime) - aPos.x * sin(atime), 
@@ -35,6 +35,30 @@ const char* fragmentShaderSource = R"(
 
     float PI = 3.141592;
 
+    
+    // c es el pixel que estamos evaluando y z simpre será 0
+    // zn = z*z + c
+    // z0 = 0.0
+    int mandelbrot(vec2 c){
+    
+        int i = 0;
+        
+        vec2 z = vec2(0.0);
+
+        while( length(z) <= 2.0 && (i < 1000.0))
+        {
+        
+          float a = z.x * z.x - z.y * z.y ;
+          float b = 2.0 * z.x * z.y;
+        
+          z = vec2(a,b) + c;
+          i++;
+        }
+    
+        return i;    
+    }
+
+
     void main()
     {
       
@@ -43,29 +67,18 @@ const char* fragmentShaderSource = R"(
         
         // Domino (0,0) x (800,800) a (-pi,-pi) x (pi,pi)    
         
-        //1. (0,0) x (800,800) a (0,0) x (1,1)
+        //1. (0,0) x (800,800) a (-2,-2) x (2,2)
         float x = gl_FragCoord.x / 800 ;
         float y = gl_FragCoord.y / 800 ;
 
-        
-
-        //(0,1) -> (-0.5, 0.5) -> (-1,1) -> (-pi,pi)
-        float x1 = (x - 0.5) * 2.0 * PI;
-        float y1 = (y - 0.5) * 2.0 * PI;
-        
-        //jugamos con los angulos
-        float freq =  2.0 ;
-        float anglex = freq * x1 ;
-        float angley = freq * y1 ;
-
-        // calculamos la función 
-        float z =  cos( anglex) + sin( angley ); 
-
+        // (0,1) -> (-2,2) 
+        float x1 = (x - 0.5) * 4.0;
+        float y1 = (y - 0.5) * 4.0;
+         
+        float color = mandelbrot(vec2(x1,y1));
+        color = color / 1000.0;
         //pintamos el diminio en (x,y) y el rango en z
-        FragColor = vec4(   ( cos(anglex) + 1.0) * 0.5 , 
-                            ( sin(angley) + 1.0) * 0.5, 
-                            (z + 2.0) * 0.25 ,
-                            1.0);
+        FragColor = vec4(color,color,color,1.0);
     }
 )";
 

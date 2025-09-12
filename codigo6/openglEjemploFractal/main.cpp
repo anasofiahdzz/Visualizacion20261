@@ -16,12 +16,7 @@ const char* vertexShaderSource = R"(
 
     void main()
     {
-//      gl_Position = vec4(aPos.x + sin(atime),aPos.y,aPos.z, 1.0);
-        gl_Position = vec4(
-                        aPos.x , //* cos(atime) + aPos.y * sin(atime), 
-                        aPos.y , //* cos(atime) - aPos.x * sin(atime), 
-                        aPos.z, 
-                        1.0);
+        gl_Position = vec4(aPos.x ,aPos.y,aPos.z, 1.0);
         vertexColor = (aPos * cos(atime) + 1.0)*0.5;
     }
 )";
@@ -45,7 +40,7 @@ const char* fragmentShaderSource = R"(
         
         vec2 z = vec2(0.0);
 
-        while( length(z) <= 2.0 && (i < 1000.0))
+        while( length(z) <= 2.0 && (i < 100.0))
         {
         
           float a = z.x * z.x - z.y * z.y ;

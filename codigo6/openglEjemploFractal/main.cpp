@@ -34,13 +34,13 @@ const char* fragmentShaderSource = R"(
     // c es el pixel que estamos evaluando y z simpre será 0
     // zn = z*z + c
     // z0 = 0.0
-    int mandelbrot(vec2 c){
+    int mandelbrot(vec2 c, float max_iter){
     
         int i = 0;
         
         vec2 z = vec2(0.0);
 
-        while( length(z) <= 2.0 && (i < 100.0))
+        while( length(z) <= 2.0 && (i < max_iter))
         {
         
           float a = z.x * z.x - z.y * z.y ;
@@ -55,14 +55,12 @@ const char* fragmentShaderSource = R"(
 
 
     void main()
-    {
-      
-
-        //cos(x) + sin(y)
-        
-        // Domino (0,0) x (800,800) a (-pi,-pi) x (pi,pi)    
-        
+    {   
+        // Conjunto de MandelBrot
         //1. (0,0) x (800,800) a (-2,-2) x (2,2)
+
+        //float max_iterations = atime;
+        float max_iterations = 100;
         float x = gl_FragCoord.x / 800 ;
         float y = gl_FragCoord.y / 800 ;
 
@@ -70,10 +68,17 @@ const char* fragmentShaderSource = R"(
         float x1 = (x - 0.5) * 4.0;
         float y1 = (y - 0.5) * 4.0;
          
-        float color = mandelbrot(vec2(x1,y1));
-        color = color / 1000.0;
+        float color = mandelbrot(vec2(x1,y1), max_iterations);
+        
         //pintamos el diminio en (x,y) y el rango en z
-        FragColor = vec4(color,color,color,1.0);
+
+        if(color < max_iterations){
+            color = color / max_iterations;
+            FragColor = vec4(color,0.0,0.0,1.0);
+        }else
+        
+            FragColor = vec4(0.0,0.0,0.0,1.0);
+
     }
 )";
 
@@ -206,7 +211,7 @@ int main()
             time = time + 1;
             fps = 0;
         }
-        std::cout << fps << " : "<< ctime << std::endl;
+        //std::cout << fps << " : "<< ctime << std::endl;
         
         // Input
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)

@@ -1,8 +1,8 @@
 # Variables
 CC = g++
-SRC = main.cpp
+SRC = main.cpp gl.c
 TARGET = cuadrado
-LIBS = -lglfw -lGLEW -lGL
+LIBS = -lglfw -lGL
 CFLAGS = -Wall -Wextra -std=c++11
 
 # Default target

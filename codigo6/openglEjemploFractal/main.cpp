@@ -1,4 +1,4 @@
-#include <GL/glew.h>
+#include "gl.h"
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <cmath>
@@ -122,13 +122,6 @@ int main()
         return -1;
     }
     glfwMakeContextCurrent(window);
-
-    // Initialize GLEW
-    if (glewInit() != GLEW_OK)
-    {
-        std::cerr << "Failed to initialize GLEW" << std::endl;
-        return -1;
-    }
 
     // Build and compile the vertex shader
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);

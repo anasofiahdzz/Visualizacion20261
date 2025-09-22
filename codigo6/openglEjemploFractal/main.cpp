@@ -27,6 +27,7 @@ const char* fragmentShaderSource = R"(
     out vec4 FragColor;
     in vec3 vertexColor;
     uniform float atime;
+    uniform int indexPaleta; //para elegir la paleta y no comentar y descomentar
 
     float PI = 3.141592;
 
@@ -53,6 +54,37 @@ const char* fragmentShaderSource = R"(
         return i;    
     }
 
+    //las 3 paletas
+    // Paleta1 de 6 colores
+    vec3 paleta1[6] = vec3[6](
+        vec3(166.0/255.0, 213.0/255.0, 253.0/255.0), // azul pastel
+        vec3(0.7, 0.6, 0.9), // morado pastel
+        vec3(1.0, 0.8, 0.9), // rosa pastel
+        vec3(0.7, 0.9, 0.7), // verde pastel
+        vec3(0.9, 0.9, 0.8), // amarillo pastel
+        vec3(0.9, 0.7, 0.6)  // melon
+    );
+
+    //Paleta2 Tema mexicano
+    vec3 paleta2[6] = vec3[6](
+        vec3(147.0/255.0, 255.0/255.0, 31.0/255.0), // verde pasto
+        vec3(39.0/255.0, 74.0/255.0, 1.0/255.0), // verde bandera
+        vec3(255.0/255.0, 255.0/255.0, 255.0/255.0), // blanco
+        vec3(237.0/255.0, 237.0/255.0, 211.0/255.0), // beige verdoso
+        vec3(181.0/255.0, 0.0/255.0, 0.0/255.0), // rojo fuerte
+        vec3(255.0/255.0, 18.0/255.0, 18.0/255.0) // verde pasto
+    );
+
+    //Paleta3 Atardecer
+    vec3 paleta3[6] = vec3[6](
+        vec3(81.0/255.0, 107.0/255.0, 176.0/255.0), // azul morado
+        vec3(255.0/255.0, 210.0/255.0, 120.0/255.0), // amarillo claro
+        vec3(76.0/255.0, 62.0/255.0, 135.0/255.0), // morado oscuro
+        vec3(243.0/255.0, 140.0/255.0, 97.0/255.0), // naranja claro
+        vec3(192.0/255.0, 92.0/255.0, 114.0/255.0), // morado cafe
+        vec3(121.0/255.0, 69.0/255.0, 138.0/255.0) // lavanda oscuro
+    );
+
     void main()
     {   
         // Conjunto de MandelBrot
@@ -75,46 +107,22 @@ const char* fragmentShaderSource = R"(
             // Normalizamos las iteraciones
             float t = color / max_iterations;
 
-            // Paleta1 de 6 colores
-/*
-            vec3 paleta[6] = vec3[6](
-                vec3(166.0/255.0, 213.0/255.0, 253.0/255.0), // azul pastel
-                vec3(0.7, 0.6, 0.9), // morado pastel
-                vec3(1.0, 0.8, 0.9), // rosa pastel
-                vec3(0.7, 0.9, 0.7), // verde pastel
-                vec3(0.9, 0.9, 0.8), // amarillo pastel
-                vec3(0.9, 0.7, 0.6)  // melon
-            );
-*/
-
-            //Paleta2 Tema mexicano
-/*
-            vec3 paleta[6] = vec3[6](
-                vec3(147.0/255.0, 255.0/255.0, 31.0/255.0), // verde pasto
-                vec3(39.0/255.0, 74.0/255.0, 1.0/255.0), // verde bandera
-                vec3(255.0/255.0, 255.0/255.0, 255.0/255.0), // blanco
-                vec3(237.0/255.0, 237.0/255.0, 211.0/255.0), // beige verdoso
-                vec3(181.0/255.0, 0.0/255.0, 0.0/255.0), // rojo fuerte
-                vec3(255.0/255.0, 18.0/255.0, 18.0/255.0) // verde pasto
-            );
-
-*/
-            //Paleta3 Atardecer
-            vec3 paleta[6] = vec3[6](
-                vec3(81.0/255.0, 107.0/255.0, 176.0/255.0), // azul morado
-                vec3(255.0/255.0, 210.0/255.0, 120.0/255.0), // amarillo claro
-                vec3(76.0/255.0, 62.0/255.0, 135.0/255.0), // morado oscuro
-                vec3(243.0/255.0, 140.0/255.0, 97.0/255.0), // naranja claro
-                vec3(192.0/255.0, 92.0/255.0, 114.0/255.0), // morado cafe
-                vec3(121.0/255.0, 69.0/255.0, 138.0/255.0) // lavanda oscuro
-            );
-
             // Elegimos índice según t
             int idx = int(floor(t * 6.0));
             idx = clamp(idx, 0, 5);
 
-            // Tomamos el color final
-            vec3 finalColor = paleta[idx];
+            // Tomamos el color final ORIGINAL
+            //vec3 finalColor = paleta[idx];
+
+            //Para elegir la paletas
+            vec3 finalColor;
+            if(indexPaleta == 0){
+                finalColor = paleta1[idx];
+            }else if(indexPaleta == 1){
+                finalColor = paleta2[idx];
+            } else {
+                finalColor = paleta3[idx];
+            }
 
             // Lo pasamos al fragmento
             FragColor = vec4(finalColor, 1.0);
@@ -123,7 +131,6 @@ const char* fragmentShaderSource = R"(
             FragColor = vec4(0.0,0.0,0.0,1.0);
     }
 )";
-
 
 std::vector<float> crearCuadrado(){
 
@@ -154,6 +161,14 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    //preguntar por la paleta
+    int elegirPaleta;
+    std::cout << "Selecciona la paleta de colores:\n";
+    std::cout << "0: Pastel\n";
+    std::cout << "1: Mexicano\n";
+    std::cout << "2: Atardecer\n";
+    std::cin >> elegirPaleta;
 
     // Create a GLFWwindow object
     GLFWwindow* window = glfwCreateWindow(800, 800, "OpenGL Triangle", NULL, NULL);
@@ -213,8 +228,6 @@ int main()
 
     // Set up vertex data and buffers and configure vertex attributes
 
-    
-
     std::vector<float> vertices = crearCuadrado();
     GLuint VBO, VAO;
     
@@ -236,6 +249,13 @@ int main()
     float ptime = 0.0f;
     float time = 0.0f;
     int fps;
+
+    //aqui paleta loc
+    glUseProgram(shaderProgram);
+
+    GLuint paletteLoc = glGetUniformLocation(shaderProgram, "paletteIndex");
+    glUniform1i(paletteLoc, elegirPaleta);
+
     // Render loop
     while (!glfwWindowShouldClose(window))
     {
@@ -257,7 +277,7 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
 
         // Draw the triangle
-        glUseProgram(shaderProgram);
+        //glUseProgram(shaderProgram);
 
         GLuint uniformTime = glGetUniformLocation(shaderProgram, "atime");
         glUniform1f(uniformTime,time);

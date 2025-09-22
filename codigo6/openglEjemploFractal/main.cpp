@@ -53,7 +53,6 @@ const char* fragmentShaderSource = R"(
         return i;    
     }
 
-
     void main()
     {   
         // Conjunto de MandelBrot
@@ -73,12 +72,55 @@ const char* fragmentShaderSource = R"(
         //pintamos el diminio en (x,y) y el rango en z
 
         if(color < max_iterations){
-            color = color / max_iterations;
-            FragColor = vec4(color,0.0,0.0,1.0);
+            // Normalizamos las iteraciones
+            float t = color / max_iterations;
+
+            // Paleta1 de 6 colores
+/*
+            vec3 paleta[6] = vec3[6](
+                vec3(166.0/255.0, 213.0/255.0, 253.0/255.0), // azul pastel
+                vec3(0.7, 0.6, 0.9), // morado pastel
+                vec3(1.0, 0.8, 0.9), // rosa pastel
+                vec3(0.7, 0.9, 0.7), // verde pastel
+                vec3(0.9, 0.9, 0.8), // amarillo pastel
+                vec3(0.9, 0.7, 0.6)  // melon
+            );
+*/
+
+            //Paleta2 Tema mexicano
+/*
+            vec3 paleta[6] = vec3[6](
+                vec3(147.0/255.0, 255.0/255.0, 31.0/255.0), // verde pasto
+                vec3(39.0/255.0, 74.0/255.0, 1.0/255.0), // verde bandera
+                vec3(255.0/255.0, 255.0/255.0, 255.0/255.0), // blanco
+                vec3(237.0/255.0, 237.0/255.0, 211.0/255.0), // beige verdoso
+                vec3(181.0/255.0, 0.0/255.0, 0.0/255.0), // rojo fuerte
+                vec3(255.0/255.0, 18.0/255.0, 18.0/255.0) // verde pasto
+            );
+
+*/
+            //Paleta3 Atardecer
+            vec3 paleta[6] = vec3[6](
+                vec3(81.0/255.0, 107.0/255.0, 176.0/255.0), // azul morado
+                vec3(255.0/255.0, 210.0/255.0, 120.0/255.0), // amarillo claro
+                vec3(76.0/255.0, 62.0/255.0, 135.0/255.0), // morado oscuro
+                vec3(243.0/255.0, 140.0/255.0, 97.0/255.0), // naranja claro
+                vec3(192.0/255.0, 92.0/255.0, 114.0/255.0), // morado cafe
+                vec3(121.0/255.0, 69.0/255.0, 138.0/255.0) // lavanda oscuro
+            );
+
+            // Elegimos índice según t
+            int idx = int(floor(t * 6.0));
+            idx = clamp(idx, 0, 5);
+
+            // Tomamos el color final
+            vec3 finalColor = paleta[idx];
+
+            // Lo pasamos al fragmento
+            FragColor = vec4(finalColor, 1.0);
         }else
         
             FragColor = vec4(0.0,0.0,0.0,1.0);
-
     }
 )";
 

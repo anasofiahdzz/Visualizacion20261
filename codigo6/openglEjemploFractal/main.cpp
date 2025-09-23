@@ -165,9 +165,9 @@ int main()
     //preguntar por la paleta
     int elegirPaleta;
     std::cout << "Selecciona la paleta de colores:\n";
-    std::cout << "0: Pastel\n";
-    std::cout << "1: Mexicano\n";
-    std::cout << "2: Atardecer\n";
+    std::cout << "0: Tonos Pastel\n";
+    std::cout << "1: Tematica Mexicana\n";
+    std::cout << "2: Tonos del Atardecer\n";
     std::cin >> elegirPaleta;
 
     // Create a GLFWwindow object
@@ -253,8 +253,8 @@ int main()
     //aqui paleta loc
     glUseProgram(shaderProgram);
 
-    GLuint paletteLoc = glGetUniformLocation(shaderProgram, "paletteIndex");
-    glUniform1i(paletteLoc, elegirPaleta);
+    GLuint punteroShader = glGetUniformLocation(shaderProgram, "indexPaleta");
+    glUniform1i(punteroShader, elegirPaleta); //punteroShader, puntero hacia paletaIndex dentro del shaser
 
     // Render loop
     while (!glfwWindowShouldClose(window))

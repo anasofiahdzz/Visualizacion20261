@@ -5,6 +5,9 @@
 #include <vector>
 #define PI 3.141592
 
+// para el zoom (vars globales)
+double centerX = 0.0, centerY = 0.0;
+double scale = 4.0;  // tamaño inicial del dominio (-2,2)
 
 // Vertex Shader source code (GLSL 4.10)
 const char* vertexShaderSource = R"(
@@ -85,6 +88,12 @@ const char* fragmentShaderSource = R"(
         vec3(121.0/255.0, 69.0/255.0, 138.0/255.0) // lavanda oscuro
     );
 
+    //para el zoom
+    uniform float centerX;
+    uniform float centerY;
+    uniform float scale;
+
+
     void main()
     {   
         // Conjunto de MandelBrot
@@ -96,8 +105,13 @@ const char* fragmentShaderSource = R"(
         float y = gl_FragCoord.y / 800 ;
 
         // (0,1) -> (-2,2) 
-        float x1 = (x - 0.5) * 4.0;
-        float y1 = (y - 0.5) * 4.0;
+        //original
+        //float x1 = (x - 0.5) * 4.0;
+        //float y1 = (y - 0.5) * 4.0;
+        //para el zoom
+        float x1 = centerX + (x - 0.5) * scale;
+        float y1 = centerY + (y - 0.5) * scale;
+
          
         float color = mandelbrot(vec2(x1,y1), max_iterations);
         
@@ -148,6 +162,26 @@ std::vector<float> crearCuadrado(){
     return vertices;
 }
 
+/*para el zoom*/
+void zoom(GLFWwindow* window, int button, int action, int mods) {
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        double xpos, ypos;
+        glfwGetCursorPos(window, &xpos, &ypos);
+
+        int width, height;
+        glfwGetWindowSize(window, &width, &height);
+
+        // Convertir coordenadas de ventana a plano complejo
+        double x = (xpos / width  - 0.5) * scale + centerX;
+        double y = (1.0 - ypos / height - 0.5) * scale + centerY;
+
+        // zoom in
+        centerX = x;
+        centerY = y;
+        scale /= 2.0;
+    }
+}
+
 int main()
 {
     // Initialize GLFW
@@ -172,6 +206,9 @@ int main()
 
     // Create a GLFWwindow object
     GLFWwindow* window = glfwCreateWindow(800, 800, "OpenGL Triangle", NULL, NULL);
+    //para el zoom
+    glfwSetMouseButtonCallback(window, zoom);
+
     if (!window)
     {
         std::cerr << "Failed to create GLFW window" << std::endl;
@@ -250,7 +287,7 @@ int main()
     float time = 0.0f;
     int fps;
 
-    //aqui paleta loc
+    //punteroShader
     glUseProgram(shaderProgram);
 
     GLuint punteroShader = glGetUniformLocation(shaderProgram, "indexPaleta");
@@ -281,6 +318,15 @@ int main()
 
         GLuint uniformTime = glGetUniformLocation(shaderProgram, "atime");
         glUniform1f(uniformTime,time);
+
+        //para el zoom
+        GLuint centerXLoc = glGetUniformLocation(shaderProgram, "centerX");
+        GLuint centerYLoc = glGetUniformLocation(shaderProgram, "centerY");
+        GLuint scaleLoc   = glGetUniformLocation(shaderProgram, "scale");
+
+        glUniform1f(centerXLoc, (float)centerX);
+        glUniform1f(centerYLoc, (float)centerY);
+        glUniform1f(scaleLoc,   (float)scale);
 
        // glBindVertexArray(VAOcolor);
         glBindVertexArray(VAO);

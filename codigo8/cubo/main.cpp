@@ -1,5 +1,6 @@
 #include "./header/ventana.h"
 #include "./header/shader.h"
+#include "./header/gl.h"
 #include <iostream>
 
 Ventana *ventana;
@@ -16,8 +17,6 @@ void init(){
     ventana = new Ventana(600,600);
     // Inicializar GLFW
     ventana->initGLFW();
-    // Inicializar GLEW
-    ventana->initGLEW();
     
     model = new Model();
     ventana->initModels(model);

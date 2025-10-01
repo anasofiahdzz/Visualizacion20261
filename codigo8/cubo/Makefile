@@ -1,8 +1,8 @@
 CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra
-LDFLAGS =  -lglfw -lGL -lGLEW 
+LDFLAGS =  -lglfw -lGL 
 
-SRC_FILES = main.cpp src/shader.cpp  src/model.cpp src/ventana.cpp
+SRC_FILES = main.cpp src/shader.cpp  src/model.cpp src/ventana.cpp gl.c
 OBJ_FILES = $(SRC_FILES:.cpp=.o)
 TARGET = cubo
 
@@ -14,6 +14,9 @@ $(TARGET): $(OBJ_FILES)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@ 
+
+%.o: %.c
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
 	rm -f $(OBJ_FILES) $(TARGET)

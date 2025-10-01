@@ -33,15 +33,8 @@ void Ventana::initGLFW()
     glfwMakeContextCurrent(window);
 
 
-}
 
-    // Inicializar GLEW
-void Ventana::initGLEW(){
-    if (glewInit() != GLEW_OK) {
-        std::cerr << "Error al inicializar GLEW" << std::endl;
-        return;
-    }
-    std::cout << "Inicialización Correcta de GLEW y GLFW" << std::endl;
+
     // Habilitar depth testing y face culling
     glEnable(GL_DEPTH_TEST);  // Prueba de profundidad
     glEnable(GL_CULL_FACE);   // Habilitar culling de caras

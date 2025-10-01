@@ -10,7 +10,7 @@ class Model{
 public:
 
     Shader* shader;
-    GLfloat vertices[48];
+    GLfloat vertices[64];
     GLuint indices[36];
     float angle;
     glm::mat4 modelmat;

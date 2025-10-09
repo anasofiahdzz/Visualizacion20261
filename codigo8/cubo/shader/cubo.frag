@@ -30,7 +30,7 @@ void main()
         //1. (0,0) x (1,1) a (-2,-2) x (2,2)
 
         //float max_iterations = atime;
-        float max_iterations = 100;
+        float max_iterations = 10;
         float x = coordTex.x;
         float y = coordTex.y;
 
@@ -41,6 +41,7 @@ void main()
         
         float iter = mandelbrot(vec2(x1,y1), max_iterations);
 
+/*
  if(iter < max_iterations){
             iter = iter / max_iterations;
             FragColor = vec4(iter,0.0,0.0,1.0);
@@ -49,4 +50,7 @@ void main()
             FragColor = vec4(0.0,0.0,1.0,1.0);
 
    // color = vec4(coordTex, 0.0, 1.0);
+*/
+FragColor = vec4(coordTex, 0.0, 1.0);
 }
+

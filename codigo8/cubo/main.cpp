@@ -1,6 +1,6 @@
 #include "./header/ventana.h"
 #include "./header/shader.h"
-#include "./header/gl.h"
+//#include "./header/gl.h"
 #include <iostream>
 
 Ventana *ventana;

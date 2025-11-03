@@ -22,6 +22,24 @@ out vec4 FragColor;
         return i;
     }
 
+float func(float x, float y){
+
+    return exp( -x*x - y*y);
+
+}
+
+vec3 arcoiris(float val){
+
+    float dx = 0.8;
+    float f = clamp(val,0,1);
+    float g = (6.0 - 2.0*dx) * f + dx;
+    vec3 color = vec3(1.0);
+    color.r = max(0,(3.0- abs(g-4.0) - abs(g-5.0)) / 2.0);
+    color.g = max(0,(4.0- abs(g-2.0) - abs(g-4.0)) / 2.0);
+    color.b = max(0,(3.0- abs(g-1.0) - abs(g-2.0)) / 2.0);
+    return color;
+}
+
 void main()
 {
             // Conjunto de MandelBrot
@@ -33,20 +51,15 @@ void main()
         float y = coordTex.y;
 
         // (0,1) -> (-2,2)
-        float x1 = (x - 0.5) * 4.0;
-        float y1 = (y - 0.5) * 4.0;
+        float x1 = 2.0 * x - 1.0;
+        float y1 = 2.0 * y - 1.0;
 
         
-        float iter = mandelbrot(vec2(x1,y1), max_iterations);
+        //float iter = mandelbrot(vec2(x1,y1), max_iterations);
+        float val = func(x1, y1);
 
- if(iter < max_iterations){
-            iter = iter / max_iterations;
-            FragColor = vec4(iter,0.0,0.0,1.0);
-        }else
-
-            FragColor = vec4(0.0,0.0,1.0,1.0);
-
+        vec3 col = arcoiris(val);
     
    
-   //FragColor = vec4(coordTex, 0.0, 1.0);
+   FragColor = vec4(col, 1.0);
 }

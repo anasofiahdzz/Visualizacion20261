@@ -6,6 +6,11 @@ float func(float x, float y){
 
     return exp( -x*x - y*y);
 
+}   
+
+vec2 gradianteFunc(float x,float y){
+
+    return vec2(-2.0*x*exp(-x*x - y*y),-2.0*y*exp(-x*x - y*y));
 }
 
 vec3 arcoiris(float val){
@@ -18,13 +23,6 @@ vec3 arcoiris(float val){
     color.g = max(0,(4.0- abs(g-2.0) - abs(g-4.0)) / 2.0);
     color.b = max(0,(3.0- abs(g-1.0) - abs(g-2.0)) / 2.0);
     return color;
-}
-
-vec3 contorno(float val, float val_cont ,vec3 col){
-    float epsilon = 0.001;
-    if( val_cont - epsilon <= val  &&  val <= val_cont + epsilon)
-       return vec3(0.0);
-    return col;
 }
 
 void main()
@@ -41,16 +39,18 @@ void main()
         float x1 = 2.0 * x - 1.0;
         float y1 = 2.0 * y - 1.0;
 
-        //2. Evaluamos la función
-        float val = func(x1, y1);
+        // Las coordenadas x1 y y1 están entre [-1,-1] y [1,1]
+        
+        //float val = func(x1, y1);
+        //2. Obtenemos el gradiente de la función
+        vec2 vector = gradianteFunc(x1,y1);
 
-        //3. Pintamos el valor Rojo cercano a 1, azul cercano a 0
+        //3. Calculamus su magnitud 
+        float val = length(vector);
+
+        //4. Pintamos la magnitud
+        // Nos indica donde hay cambios Rojo mucho cambio Azul poco o nada
         vec3 col = arcoiris(val);
-
-        //4. Pintamos los contornos en valores específicos
-        col = contorno(val,0.75, col);
-        col = contorno(val,0.5, col);
-        col = contorno(val,0.25, col);
    
    FragColor = vec4(col, 1.0);
 }
